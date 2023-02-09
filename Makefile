@@ -110,11 +110,7 @@ GIT_HASH       = -D__KWAVE_GIT_HASH__=\"468dc31c2842a7df5f2a07c3a13c16c9b0b2b770
 .RECIPEPREFIX += 
 
 # What CUDA GPU architectures to include in the binary
-CUDA_ARCH = --generate-code arch=compute_30,code=sm_30 \
-            --generate-code arch=compute_32,code=sm_32 \
-            --generate-code arch=compute_35,code=sm_35 \
-            --generate-code arch=compute_37,code=sm_37 \
-            --generate-code arch=compute_50,code=sm_50 \
+CUDA_ARCH = --generate-code arch=compute_50,code=sm_50 \
             --generate-code arch=compute_52,code=sm_52 \
             --generate-code arch=compute_53,code=sm_53 \
             --generate-code arch=compute_60,code=sm_60 \
@@ -122,7 +118,12 @@ CUDA_ARCH = --generate-code arch=compute_30,code=sm_30 \
             --generate-code arch=compute_62,code=sm_62 \
             --generate-code arch=compute_70,code=sm_70 \
             --generate-code arch=compute_72,code=sm_72 \
-            --generate-code arch=compute_75,code=sm_75
+            --generate-code arch=compute_75,code=sm_75 \
+            --generate-code arch=compute_80,code=sm_80 \
+            --generate-code arch=compute_87,code=sm_87 \
+            --generate-code arch=compute_89,code=sm_89 \
+            --generate-code arch=compute_90,code=sm_90 \
+            --generate-code arch=compute_90a,code=sm_90a
 
 # What libraries to link and how
 ifeq ($(LINKING), STATIC)
@@ -131,9 +132,9 @@ ifeq ($(LINKING), STATIC)
            $(CUDA_DIR)/lib64/libcufft_static.a  \
            $(CUDA_DIR)/lib64/libculibos.a       \
            $(CUDA_DIR)/lib64/libcudart_static.a \
-           $(ZLIB_DIR)/lib/libz.a               \
-           $(SZIP_DIR)/lib/libsz.a              \
-           -ldl
+	   -lz					\
+           -ldl					\
+  	   -lsz
 
 else ifeq ($(LINKING), DYNAMIC)
   LDLIBS = -lhdf5 -lhdf5_hl -lz -lcufft
@@ -141,9 +142,9 @@ else ifeq ($(LINKING), DYNAMIC)
 else ifeq ($(LINKING), SEMI)
   LDLIBS = $(HDF5_DIR)/lib/libhdf5_hl.a \
            $(HDF5_DIR)/lib/libhdf5.a    \
-           $(ZLIB_DIR)/lib/libz.a       \
-           $(SZIP_DIR)/lib/libsz.a      \
+	   -lz				\
            -lcufft                      \
+	   -lsz				\
            -ldl
 endif
 
