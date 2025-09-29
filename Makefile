@@ -107,8 +107,7 @@ SZIP_DIR = $(EBROOTSZIP)
 GIT_HASH       = -D__KWAVE_GIT_HASH__=\"468dc31c2842a7df5f2a07c3a13c16c9b0b2b770\"
 
 # What CUDA GPU architectures to include in the binary
-CUDA_ARCH = --generate-code arch=compute_50,code=sm_50 \
-            --generate-code arch=compute_52,code=sm_52 \
+CUDA_ARCH = --generate-code arch=compute_52,code=sm_52 \
             --generate-code arch=compute_53,code=sm_53 \
             --generate-code arch=compute_60,code=sm_60 \
             --generate-code arch=compute_61,code=sm_61 \
