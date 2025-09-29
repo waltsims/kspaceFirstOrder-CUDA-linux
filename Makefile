@@ -106,9 +106,6 @@ SZIP_DIR = $(EBROOTSZIP)
 # Git hash of release 1.3
 GIT_HASH       = -D__KWAVE_GIT_HASH__=\"468dc31c2842a7df5f2a07c3a13c16c9b0b2b770\"
 
-# Replace tabs by spaces
-.RECIPEPREFIX += 
-
 # What CUDA GPU architectures to include in the binary
 CUDA_ARCH = --generate-code arch=compute_50,code=sm_50 \
             --generate-code arch=compute_52,code=sm_52 \
@@ -194,7 +191,7 @@ ifeq ($(COMPILER), GNU)
   # Add include directories
   INCLUDES  = -I$(HDF5_DIR)/include -I.
   # Add library directories
-  LIB_PATHS = -L$(HDF5_DIR)/lib -L$(CUDA_DIR)/lib64
+  LIB_PATHS = -L$(HDF5_DIR)/lib -L$(CUDA_DIR)
 
   # Set compiler flags and header files directories
   CXXFLAGS  = -Xcompiler="$(CPU_FLAGS) $(CPU_OPT) $(OPENMP)  \
@@ -206,7 +203,7 @@ ifeq ($(COMPILER), GNU)
 
   # Set linker flags and library files directories
   LDFLAGS   = -Xcompiler="$(OPENMP)" \
-              -Xlinker="-rpath,$(HDF5_DIR)/lib:$(CUDA_DIR)/lib64" \
+              -Xlinker="-rpath,$(HDF5_DIR)/lib:$(CUDA_DIR)" \
               -std=c++11             \
                $(LIB_PATHS)
 endif
@@ -257,7 +254,7 @@ ifeq ($(COMPILER), Intel)
   # Add include directories
   INCLUDES  = -I$(HDF5_DIR)/include -I.
   # Add library directories
-  LIB_PATHS = -L$(HDF5_DIR)/lib -L$(CUDA_DIR)/lib64
+  LIB_PATHS = -L$(HDF5_DIR)/lib -L$(CUDA_DIR)
 
   # Set compiler flags and header files directories
   CXXFLAGS  = -Xcompiler="$(CPU_FLAGS) $(CPU_OPT) $(OPENMP)   \
@@ -315,17 +312,17 @@ all: $(TARGET)
 
 # Link target
 $(TARGET): $(DEPENDENCIES)
-  $(CXX) $(LDFLAGS) $(DEPENDENCIES) $(LDLIBS) -o $@
+	$(CXX) $(LDFLAGS) $(DEPENDENCIES) $(LDLIBS) -o $@
 
 # Compile CPU units
 %.o: %.cpp
-  $(CXX) $(CXXFLAGS) -o $@ -c $<
+	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 # Compile CUDA units
 %.o: %.cu
-  $(CXX) $(CXXFLAGS) $(CUDA_ARCH) -o $@ -c $<
+	$(CXX) $(CXXFLAGS) $(CUDA_ARCH) -o $@ -c $<
 
 # Clean repository
 .PHONY: clean
 clean:
-  rm -f $(DEPENDENCIES) $(TARGET)
+	rm -f $(DEPENDENCIES) $(TARGET)
