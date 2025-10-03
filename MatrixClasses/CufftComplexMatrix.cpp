@@ -59,22 +59,19 @@ cufftHandle CufftComplexMatrix::sC2RFftPlan1DZ = cufftHandle();
  */
 std::map<cufftResult, ErrorMessage> CufftComplexMatrix::sCufftErrorMessages
 {
-  {CUFFT_INVALID_PLAN             , kErrFmtCufftInvalidPlan},
-  {CUFFT_ALLOC_FAILED             , kErrFmtCufftAllocFailed},
-  {CUFFT_INVALID_TYPE             , kErrFmtCufftInvalidType},
-  {CUFFT_INVALID_VALUE            , kErrFmtCufftInvalidValue},
-  {CUFFT_INTERNAL_ERROR           , kErrFmtCuFFTInternalError},
-  {CUFFT_EXEC_FAILED              , kErrFmtCufftExecFailed},
-  {CUFFT_SETUP_FAILED             , kErrFmtCufftSetupFailed},
-  {CUFFT_INVALID_SIZE             , kErrFmtCufftInvalidSize},
-  {CUFFT_UNALIGNED_DATA           , kErrFmtCufftUnalignedData},
-  {CUFFT_INCOMPLETE_PARAMETER_LIST, kErrFmtCufftIncompleteParaterList},
-  {CUFFT_INVALID_DEVICE           , kErrFmtCufftInvalidDevice},
-  {CUFFT_PARSE_ERROR              , kErrFmtCufftParseError},
-  {CUFFT_NO_WORKSPACE             , kErrFmtCufftNoWorkspace},
-  {CUFFT_NOT_IMPLEMENTED          , kErrFmtCufftNotImplemented},
-  {CUFFT_LICENSE_ERROR            , kErrFmtCufftLicenseError},
-  {CUFFT_NOT_SUPPORTED            , kErrFmtCufftNotSupported}
+  {CUFFT_INVALID_PLAN  , kErrFmtCufftInvalidPlan},
+  {CUFFT_ALLOC_FAILED  , kErrFmtCufftAllocFailed},
+  {CUFFT_INVALID_TYPE  , kErrFmtCufftInvalidType},
+  {CUFFT_INVALID_VALUE , kErrFmtCufftInvalidValue},
+  {CUFFT_INTERNAL_ERROR, kErrFmtCuFFTInternalError},
+  {CUFFT_EXEC_FAILED   , kErrFmtCufftExecFailed},
+  {CUFFT_SETUP_FAILED  , kErrFmtCufftSetupFailed},
+  {CUFFT_INVALID_SIZE  , kErrFmtCufftInvalidSize},
+  {CUFFT_UNALIGNED_DATA, kErrFmtCufftUnalignedData},
+  {CUFFT_INVALID_DEVICE, kErrFmtCufftInvalidDevice},
+  {CUFFT_NO_WORKSPACE  , kErrFmtCufftNoWorkspace},
+  {CUFFT_NOT_IMPLEMENTED, kErrFmtCufftNotImplemented},
+  {CUFFT_NOT_SUPPORTED , kErrFmtCufftNotSupported}
 };
 //----------------------------------------------------------------------------------------------------------------------
 
