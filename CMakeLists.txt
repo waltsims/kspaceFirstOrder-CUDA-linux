@@ -180,12 +180,26 @@ target_compile_definitions(kspaceFirstOrder-CUDA
     "__KWAVE_GIT_HASH__=\"${KSPACE_GIT_HASH}\""
 )
 
+set(_hdf5_link_targets "")
+if(TARGET HDF5::HDF5)
+  list(APPEND _hdf5_link_targets HDF5::HDF5)
+endif()
+if(TARGET HDF5::HL)
+  list(APPEND _hdf5_link_targets HDF5::HL)
+elseif(TARGET HDF5::HDF5_HL)
+  list(APPEND _hdf5_link_targets HDF5::HDF5_HL)
+elseif(DEFINED HDF5_HL_LIBRARIES)
+  list(APPEND _hdf5_link_targets ${HDF5_HL_LIBRARIES})
+elseif(DEFINED HDF5_hl_LIBRARY)
+  list(APPEND _hdf5_link_targets ${HDF5_hl_LIBRARY})
+endif()
+list(REMOVE_DUPLICATES _hdf5_link_targets)
+
 target_link_libraries(kspaceFirstOrder-CUDA
   PRIVATE
     CUDA::cudart
     CUDA::cufft
-    HDF5::HDF5
-    HDF5::HL
+    ${_hdf5_link_targets}
     ZLIB::ZLIB
     dl
 )
