@@ -56,9 +56,28 @@ cufftHandle CufftComplexMatrix::sC2RFftPlan1DZ = cufftHandle();
 
 /**
  * Error message for the CufftComplexMatrix FFT class.
+ * NVIDIA removed several legacy cuFFT status codes in CUDA 13. Define two explicit tables
+ * so the build stays deterministic across toolkit revisions.
  */
-std::map<cufftResult, ErrorMessage> CufftComplexMatrix::sCufftErrorMessages
-{
+#if defined(CUDART_VERSION) && (CUDART_VERSION >= 130000)
+std::map<cufftResult, ErrorMessage> CufftComplexMatrix::sCufftErrorMessages{
+  {CUFFT_INVALID_PLAN   , kErrFmtCufftInvalidPlan},
+  {CUFFT_ALLOC_FAILED   , kErrFmtCufftAllocFailed},
+  {CUFFT_INVALID_TYPE   , kErrFmtCufftInvalidType},
+  {CUFFT_INVALID_VALUE  , kErrFmtCufftInvalidValue},
+  {CUFFT_INTERNAL_ERROR , kErrFmtCuFFTInternalError},
+  {CUFFT_EXEC_FAILED    , kErrFmtCufftExecFailed},
+  {CUFFT_SETUP_FAILED   , kErrFmtCufftSetupFailed},
+  {CUFFT_INVALID_SIZE   , kErrFmtCufftInvalidSize},
+  {CUFFT_UNALIGNED_DATA , kErrFmtCufftUnalignedData},
+  {CUFFT_INVALID_DEVICE , kErrFmtCufftInvalidDevice},
+  {CUFFT_PARSE_ERROR    , kErrFmtCufftParseError},
+  {CUFFT_NO_WORKSPACE   , kErrFmtCufftNoWorkspace},
+  {CUFFT_NOT_IMPLEMENTED, kErrFmtCufftNotImplemented},
+  {CUFFT_NOT_SUPPORTED  , kErrFmtCufftNotSupported}
+};
+#else
+std::map<cufftResult, ErrorMessage> CufftComplexMatrix::sCufftErrorMessages{
   {CUFFT_INVALID_PLAN             , kErrFmtCufftInvalidPlan},
   {CUFFT_ALLOC_FAILED             , kErrFmtCufftAllocFailed},
   {CUFFT_INVALID_TYPE             , kErrFmtCufftInvalidType},
@@ -76,6 +95,7 @@ std::map<cufftResult, ErrorMessage> CufftComplexMatrix::sCufftErrorMessages
   {CUFFT_LICENSE_ERROR            , kErrFmtCufftLicenseError},
   {CUFFT_NOT_SUPPORTED            , kErrFmtCufftNotSupported}
 };
+#endif
 //----------------------------------------------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------------------------------------------//
