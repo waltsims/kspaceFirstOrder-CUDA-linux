@@ -27,7 +27,8 @@ set(KSPACE_CUDA_ARCH_LIST "" CACHE STRING "Override CUDA architectures (semicolo
 if(KSPACE_CUDA_ARCH_LIST)
   set(CMAKE_CUDA_ARCHITECTURES "${KSPACE_CUDA_ARCH_LIST}")
 elseif(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
-  set(CMAKE_CUDA_ARCHITECTURES "50;52;53;60;61;62;70;72;75;80;87;89;90;90a")
+  # Default to modern architectures supported by current CUDA toolkits; override via KSPACE_CUDA_ARCH_LIST if needed.
+  set(CMAKE_CUDA_ARCHITECTURES "70;72;75;80;87;89;90;90a")
 endif()
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/SetupCUDA.cmake)
