@@ -60,7 +60,7 @@ cufftHandle CufftComplexMatrix::sC2RFftPlan1DZ = cufftHandle();
  * NVIDIA removed several legacy cuFFT status codes in CUDA 13. Define two explicit tables
  * so the build stays deterministic across toolkit revisions.
  */
-#if defined(CUDART_VERSION) && (CUDART_VERSION >= 130000)
+#if defined(CUDART_VERSION) && (CUDART_VERSION >= 13000)
 std::map<cufftResult, ErrorMessage> CufftComplexMatrix::sCufftErrorMessages{
   {CUFFT_INVALID_PLAN   , kErrFmtCufftInvalidPlan},
   {CUFFT_ALLOC_FAILED   , kErrFmtCufftAllocFailed},
