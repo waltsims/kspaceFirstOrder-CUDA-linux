@@ -32,6 +32,7 @@
 #include <string>
 #include <stdexcept>
 #include <cufft.h>
+#include <cuda_runtime_api.h>
 
 #include <MatrixClasses/CufftComplexMatrix.h>
 #include <MatrixClasses/TransposeCudaKernels.cuh>
