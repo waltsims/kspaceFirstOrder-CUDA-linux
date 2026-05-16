@@ -124,13 +124,13 @@ CUDA_ARCH = --generate-code arch=compute_75,code=sm_75 \
             --generate-code arch=compute_90a,code=sm_90a
 
 NVCC ?= $(CUDA_DIR)/bin/nvcc
-CUDA_MAJOR := $(shell $(NVCC) --version 2>/dev/null | sed -n 's/.*release \([0-9]*\)\.[0-9]*.*/\1/p')
-CUDA_MINOR := $(shell $(NVCC) --version 2>/dev/null | sed -n 's/.*release [0-9]*\.\([0-9]*\).*/\1/p')
-# Combined as a single MMmm integer (1208 = 12.8, 1300 = 13.0, ...) so
-# the comparison below is one numeric test instead of nested major/minor.
-CUDA_VERSION_NUM := $(shell test -n "$(CUDA_MAJOR)" -a -n "$(CUDA_MINOR)" && echo $$(( $(CUDA_MAJOR) * 100 + $(CUDA_MINOR) )))
+# Single nvcc invocation + awk parse: emits "yes" when the toolchain is
+# >= 12.8 (the first CUDA release to support Blackwell sm_100/sm_120).
+# Previous form was four separate $(shell) calls — each re-ran
+# `nvcc --version` (~50-200ms each) at Makefile parse time.
+CUDA_GE_1208 := $(shell $(NVCC) --version 2>/dev/null | awk '/release/ {split($$0,a,"release "); split(a[2],b,"[., ]"); if (b[1]*100+b[2] >= 1208) print "yes"; exit}')
 
-ifeq ($(shell test -n "$(CUDA_VERSION_NUM)" && test $(CUDA_VERSION_NUM) -ge 1208 && echo yes),yes)
+ifeq ($(CUDA_GE_1208),yes)
   CUDA_ARCH += --generate-code arch=compute_100,code=sm_100 \
                --generate-code arch=compute_100,code=compute_100 \
                --generate-code arch=compute_120,code=sm_120 \
