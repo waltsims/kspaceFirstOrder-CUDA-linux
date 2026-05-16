@@ -106,13 +106,36 @@ SZIP_DIR = $(EBROOTSZIP)
 # Git hash of release 1.3
 GIT_HASH       = -D__KWAVE_GIT_HASH__=\"468dc31c2842a7df5f2a07c3a13c16c9b0b2b770\"
 
-# What CUDA GPU architectures to include in the binary
+# What CUDA GPU architectures to include in the binary.
+# Blackwell (sm_100, sm_120) compute capabilities were introduced in
+# CUDA 12.8, so the Blackwell entries are only added when the detected
+# nvcc version is >= 12.8. Older toolchains (CUDA 12.0-12.7) keep
+# building with just the Turing-Hopper list.
+#
+# Each new sm gets a forward-compatible PTX entry too
+# (`code=compute_*`) so future Blackwell sub-variants (sm_100a,
+# sm_121, etc.) can JIT-compile from PTX instead of being rejected
+# outright by the driver for lacking a native cubin.
 CUDA_ARCH = --generate-code arch=compute_75,code=sm_75 \
             --generate-code arch=compute_80,code=sm_80 \
             --generate-code arch=compute_87,code=sm_87 \
             --generate-code arch=compute_89,code=sm_89 \
             --generate-code arch=compute_90,code=sm_90 \
             --generate-code arch=compute_90a,code=sm_90a
+
+NVCC ?= $(CUDA_DIR)/bin/nvcc
+# Single nvcc invocation + awk parse: emits "yes" when the toolchain is
+# >= 12.8 (the first CUDA release to support Blackwell sm_100/sm_120).
+# Previous form was four separate $(shell) calls — each re-ran
+# `nvcc --version` (~50-200ms each) at Makefile parse time.
+CUDA_GE_1208 := $(shell $(NVCC) --version 2>/dev/null | awk '/release/ {split($$0,a,"release "); split(a[2],b,"[., ]"); if (b[1]*100+b[2] >= 1208) print "yes"; exit}')
+
+ifeq ($(CUDA_GE_1208),yes)
+  CUDA_ARCH += --generate-code arch=compute_100,code=sm_100 \
+               --generate-code arch=compute_100,code=compute_100 \
+               --generate-code arch=compute_120,code=sm_120 \
+               --generate-code arch=compute_120,code=compute_120
+endif
 
 # What libraries to link and how
 ifeq ($(LINKING), STATIC)
