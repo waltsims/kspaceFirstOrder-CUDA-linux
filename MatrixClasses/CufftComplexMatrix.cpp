@@ -71,7 +71,17 @@ std::map<cufftResult, ErrorMessage> CufftComplexMatrix::sCufftErrorMessages
   {CUFFT_INVALID_DEVICE, kErrFmtCufftInvalidDevice},
   {CUFFT_NO_WORKSPACE  , kErrFmtCufftNoWorkspace},
   {CUFFT_NOT_IMPLEMENTED , kErrFmtCufftNotImplemented},
-  {CUFFT_NOT_SUPPORTED , kErrFmtCufftNotSupported}
+  {CUFFT_NOT_SUPPORTED , kErrFmtCufftNotSupported},
+  // Codes deprecated in cuFFT 12.9 and removed in 13.0; preserved
+  // here when building against older toolchains so cuFFT 12.x users
+  // still get descriptive error messages instead of the generic
+  // "unknown error" fallback. CUDART_VERSION is exposed by
+  // <cuda_runtime_api.h> via the cufft.h include above.
+#if CUDART_VERSION < 13000
+  {CUFFT_INCOMPLETE_PARAMETER_LIST, kErrFmtCufftIncompleteParaterList},
+  {CUFFT_PARSE_ERROR              , kErrFmtCufftParseError},
+  {CUFFT_LICENSE_ERROR            , kErrFmtCufftLicenseError},
+#endif
 };
 //----------------------------------------------------------------------------------------------------------------------
 
