@@ -70,7 +70,7 @@ std::map<cufftResult, ErrorMessage> CufftComplexMatrix::sCufftErrorMessages
   {CUFFT_UNALIGNED_DATA, kErrFmtCufftUnalignedData},
   {CUFFT_INVALID_DEVICE, kErrFmtCufftInvalidDevice},
   {CUFFT_NO_WORKSPACE  , kErrFmtCufftNoWorkspace},
-  {CUFFT_NOT_IMPLEMENTED, kErrFmtCufftNotImplemented},
+  {CUFFT_NOT_IMPLEMENTED , kErrFmtCufftNotImplemented},
   {CUFFT_NOT_SUPPORTED , kErrFmtCufftNotSupported}
 };
 //----------------------------------------------------------------------------------------------------------------------
