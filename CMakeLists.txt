@@ -66,12 +66,14 @@ mark_as_advanced(KSPACE_GIT_HASH)
 # -------------------------------------------------------------------------------------------------
 # Dependencies
 # -------------------------------------------------------------------------------------------------
-# Prefer fully static linking so the released binary runs on systems without a
-# matching CUDA runtime, FFTW, HDF5, libstdc++, etc. (Restores the
-# plug-and-play property the legacy Makefile build had.) glibc itself cannot
-# be safely static-linked — the build runner's glibc version sets the floor.
+# Prefer static linking for CUDA runtime and the C++ runtime so the released
+# binary runs on systems without a matching CUDA install (the major v1.4.0
+# regression).  HDF5 remains dynamic because distros ship a stable libhdf5
+# ABI (libhdf5_serial.so.103 / hdf5_hl.so.100 on Ubuntu 22.04+) and pulling
+# in static HDF5 drags transitive szip/zlib symbols that require explicit
+# resolution.  glibc itself cannot be safely static-linked — the build
+# runner's glibc version sets the floor.
 set(CMAKE_CUDA_RUNTIME_LIBRARY Static)
-set(HDF5_USE_STATIC_LIBRARIES ON)
 
 find_package(CUDAToolkit REQUIRED)
 find_package(HDF5 REQUIRED COMPONENTS C HL)
