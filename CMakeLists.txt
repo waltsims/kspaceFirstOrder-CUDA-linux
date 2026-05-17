@@ -66,6 +66,15 @@ mark_as_advanced(KSPACE_GIT_HASH)
 # -------------------------------------------------------------------------------------------------
 # Dependencies
 # -------------------------------------------------------------------------------------------------
+# Prefer static linking for CUDA runtime and the C++ runtime so the released
+# binary runs on systems without a matching CUDA install (the major v1.4.0
+# regression).  HDF5 remains dynamic because distros ship a stable libhdf5
+# ABI (libhdf5_serial.so.103 / hdf5_hl.so.100 on Ubuntu 22.04+) and pulling
+# in static HDF5 drags transitive szip/zlib symbols that require explicit
+# resolution.  glibc itself cannot be safely static-linked — the build
+# runner's glibc version sets the floor.
+set(CMAKE_CUDA_RUNTIME_LIBRARY Static)
+
 find_package(CUDAToolkit REQUIRED)
 find_package(HDF5 REQUIRED COMPONENTS C HL)
 find_package(ZLIB REQUIRED)
@@ -192,8 +201,9 @@ endif()
 
 target_link_libraries(kspaceFirstOrder-CUDA
   PRIVATE
-    CUDA::cudart
-    CUDA::cufft
+    CUDA::cudart_static
+    CUDA::cufft_static
+    CUDA::culibos
     ${_hdf5_link_targets}
     ZLIB::ZLIB
     dl
@@ -202,6 +212,14 @@ target_link_libraries(kspaceFirstOrder-CUDA
 if(SZIP_FOUND)
   target_link_libraries(kspaceFirstOrder-CUDA PRIVATE SZIP::SZIP)
 endif()
+
+# Static C++ runtime so the binary runs on distros with older libstdc++ /
+# libgcc_s than the build runner. Paired with CMAKE_CUDA_RUNTIME_LIBRARY=Static
+# above this gives a single self-contained executable.
+target_link_options(kspaceFirstOrder-CUDA PRIVATE
+  -static-libgcc
+  -static-libstdc++
+)
 
 # TODO: Replicate the Makefile rpath behaviour once install/runtime layout is defined.
 # TODO: Evaluate vcpkg or similar for provisioning HDF5/zlib when packaging.
